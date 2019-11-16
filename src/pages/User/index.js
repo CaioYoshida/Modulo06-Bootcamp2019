@@ -33,6 +33,7 @@ export default class User extends Component {
     stars: [],
     page: 1,
     loading: true,
+    refreshing: false,
   };
 
   async componentDidMount() {
@@ -58,6 +59,12 @@ export default class User extends Component {
     this.loadingStars();
   };
 
+  refreshList = async () => {
+    await this.setState({ page: 1, stars: [] });
+
+    this.loadingStars();
+  };
+
   renderFooter = () => {
     const { loading } = this.state;
 
@@ -78,7 +85,7 @@ export default class User extends Component {
   render() {
     const { navigation } = this.props;
     const user = navigation.getParam('user');
-    const { stars } = this.state;
+    const { stars, refreshing } = this.state;
 
     return (
       <Container>
@@ -103,6 +110,8 @@ export default class User extends Component {
           onEndReachedThreshold={0.2}
           onEndReached={this.handlePaginate}
           ListFooterComponent={this.renderFooter}
+          onRefresh={this.refreshList} // Função dispara quando o usuário arrasta a lista pra baixo
+          refreshing={refreshing}
         />
       </Container>
     );
