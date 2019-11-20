@@ -17,6 +17,8 @@ import {
   Bio,
   ProfileButton,
   ProfileButtonText,
+  RemoveButton,
+  RemoveButtonText,
 } from './styles';
 
 export default class Main extends Component {
@@ -34,6 +36,8 @@ export default class Main extends Component {
 
   async componentDidMount() {
     const users = await AsyncStorage.getItem('users');
+
+    console.tron.log(users);
 
     if (users) {
       this.setState({ users: JSON.parse(users) });
@@ -69,6 +73,18 @@ export default class Main extends Component {
     });
 
     Keyboard.dismiss();
+  };
+
+  handleRemoveRepo = async item => {
+    const { users } = this.state;
+
+    const removeIndex = await users.findIndex(
+      user => user.login === item.login
+    );
+
+    users.splice(removeIndex, 1);
+
+    this.setState({ users });
   };
 
   handleNavigate = user => {
@@ -113,6 +129,9 @@ export default class Main extends Component {
               <ProfileButton onPress={() => this.handleNavigate(item)}>
                 <ProfileButtonText>Ver Perfil</ProfileButtonText>
               </ProfileButton>
+              <RemoveButton onPress={() => this.handleRemoveRepo(item)}>
+                <RemoveButtonText>Remover Repositório</RemoveButtonText>
+              </RemoveButton>
             </User>
           )}
         />
